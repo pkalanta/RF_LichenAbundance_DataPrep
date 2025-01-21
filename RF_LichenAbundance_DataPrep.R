@@ -45,7 +45,8 @@ defineModule(sim, list(
   outputObjects = bindrows(
     #createsOutput("objectName", "objectClass", "output object description", ...),
     createsOutput(objectName = "Lichens", objectClass = "data.frame", desc = "Environmental data"),
-    createsOutput(objectName = "Predictors", objectClass = "data.frame", desc = "covariates")
+    createsOutput(objectName = "Predictors", objectClass = "data.frame", desc = "covariates"),
+    createsOutput(objectName = "train_data", "Lichens",  "studyArea",  "test_data", objectClass = "data.frame", desc = "Prepared data for rf model"),
   )
 ))
 #Event Function
@@ -69,11 +70,11 @@ Init <- function(sim) {
   browser()
   # lichen_data-gpkg= prepInputs(url = "https://drive.google.com/file/d/1kdlKO3H8K52mL1-d37FsIZcaJMKUpCn2/view?usp=drive_link",
   #fun = sf::st_read) |> Cache(),
-  response <- "REC_LICHEN"  # We are predicting REC_LICHEN
-  abundance <- response
-  features <- c("LATITUDE", "LONGITUDE", "ALTITUDE", "PC_PENT","drainage", "ageori", "essence")
-  predictors <- features # Covariates
-  Lichens <- sim$lichen_data_csv
+  sim$response = "REC_LICHEN"  # We are predicting REC_LICHEN
+  sim$abundance = response
+  sim$features = c("LATITUDE", "LONGITUDE", "ALTITUDE", "PC_PENT","drainage", "ageori", "essence")
+  sim$predictors = features # Covariates
+  sim$Lichens = sim$lichen_data_csv {
   Lichens$drainage <- as.factor(Lichens$drainage)
   Lichens$ageori <- as.factor(Lichens$ageori)
   Lichens$essence <- as.factor(Lichens$essence) #essence =type of forest
@@ -83,7 +84,7 @@ Init <- function(sim) {
   Lichens$ALTITUDE <- as.numeric(Lichens$ALTITUDE)
   Lichens$PC_PENT <- as.numeric(Lichens$PC_PENT)
   Lichens$Presence<- as.numeric(Lichens$Presence)
-  sim$Lichens <- Lichens
+  sim$Lichens <- Lichens}
   # # Split the data into train and test sets
   # set.seed(123)#,
   #Create a training and testing split 75/25

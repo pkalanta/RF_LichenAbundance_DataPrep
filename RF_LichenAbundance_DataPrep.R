@@ -106,10 +106,13 @@ Init <- function(sim) {
 }
 
 .inputObjects <- function(sim) {
+  cacheTags <- c(currentModule(sim), "function:.inputObjects")
+  dPath <- asPath(inputPath(sim), 1)
   
   if (!suppliedElsewhere("lichen_data_csv", sim)) {
     sim$lichen_data_csv <- prepInputs(url = "https://drive.google.com/file/d/1xBRTq0GYgD8CAJgsoDCV77JMUOXHZP5H/view?usp=drive_link",
-                                      fun = data.table::fread) |> Cache()
+                                      fun = data.table::fread, 
+                                      destinationPath = dPath) |> Cache()
   }
   return(invisible(sim))
 }
